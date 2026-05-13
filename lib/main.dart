@@ -1,29 +1,23 @@
-import 'package:belajar_getx/bindings/product_binding.dart';
-import 'package:belajar_getx/views/pages/product_detail_page.dart';
-import 'package:belajar_getx/views/pages/product_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
+import 'routes/app_pages.dart';
+import 'routes/app_routes.dart';
+
 void main() {
-  runApp(const MainApp());
+  runApp(const MyApp());
 }
 
-class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      initialRoute: "/product",
-      getPages: [
-        GetPage(
-          name: "/product",
-          page: () => ProductPage(),
-          binding: ProductBinding(),
-        ),
-
-        GetPage(name: "/detail", page: () => ProductDetailPage()),
-      ],
+      debugShowCheckedModeBanner: false,
+      title: 'GetX App',
+      initialRoute: AppRoutes.products,
+      getPages: AppPages.routes,
     );
   }
 }

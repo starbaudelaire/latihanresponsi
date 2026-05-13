@@ -1,20 +1,26 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+
+import '../../controllers/cart_controller.dart';
 import '../../models/product.dart';
 
 class ProductDetailPage extends StatelessWidget {
   ProductDetailPage({super.key});
-  
+
   final Product product = Get.arguments as Product;
+  final CartController cartController = Get.find<CartController>();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(backgroundColor: Colors.white, title: Text("Detail")),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        title: const Text('Detail'),
+      ),
       body: SingleChildScrollView(
         child: Padding(
-          padding: EdgeInsets.all(12),
+          padding: const EdgeInsets.all(12),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -33,8 +39,9 @@ class ProductDetailPage extends StatelessWidget {
                               child: Image.network(product.images[index]),
                             );
                           },
-                          separatorBuilder: (context, index) =>
-                              SizedBox(width: 10),
+                          separatorBuilder: (context, index) {
+                            return const SizedBox(width: 10);
+                          },
                         )
                       : Card(
                           elevation: 3,
@@ -46,47 +53,83 @@ class ProductDetailPage extends StatelessWidget {
                         ),
                 ),
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               Text(
                 product.title,
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 20),
+                style: const TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 20,
+                ),
               ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  Text("\$${product.price}", style: TextStyle(fontSize: 16)),
-                  Text("⭐️ ${product.rating}"),
+                  Text(
+                    '\$${product.price}',
+                    style: const TextStyle(
+                      fontSize: 16,
+                    ),
+                  ),
+                  Text('⭐️ ${product.rating}'),
                 ],
               ),
-              Text("Stock: ${product.stock}"),
-              SizedBox(height: 10),
-              Text(product.description, textAlign: TextAlign.justify),
-              SizedBox(height: 10),
+              Text('Stock: ${product.stock}'),
+              const SizedBox(height: 10),
+              Text(
+                product.description,
+                textAlign: TextAlign.justify,
+              ),
+              const SizedBox(height: 10),
               SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
                 child: Row(
-                  spacing: 8,
-                  children: product.tags
-                      .map((tag) => Chip(label: Text(tag)))
-                      .toList(),
+                  children: product.tags.map((tag) {
+                    return Padding(
+                      padding: const EdgeInsets.only(right: 8),
+                      child: Chip(
+                        label: Text(tag),
+                      ),
+                    );
+                  }).toList(),
                 ),
               ),
-              SizedBox(height: 20),
-              Text(
-                "Reviews",
-                style: TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
+              const SizedBox(height: 20),
+              SizedBox(
+                width: double.infinity,
+                child: ElevatedButton(
+                  onPressed: () {
+                    cartController.addToCart(product);
+
+                    Get.snackbar(
+                      'Berhasil',
+                      'Produk berhasil ditambahkan ke keranjang',
+                      snackPosition: SnackPosition.BOTTOM,
+                    );
+                  },
+                  child: const Text('Tambahkan ke Keranjang'),
+                ),
+              ),
+              const SizedBox(height: 20),
+              const Text(
+                'Reviews',
+                style: TextStyle(
+                  fontWeight: FontWeight.bold,
+                  fontSize: 19,
+                ),
               ),
               Column(
                 children: product.reviews.map((review) {
                   return ListTile(
                     leading: CircleAvatar(
                       child: Text(
-                        review['reviewerName'].toString().substring(0, 1),
+                        review['reviewerName']
+                            .toString()
+                            .substring(0, 1),
                       ),
                     ),
                     trailing: Text(
-                      "${review['rating']}⭐️",
-                      style: TextStyle(
+                      '${review['rating']}⭐️',
+                      style: const TextStyle(
                         fontSize: 18,
                         fontWeight: FontWeight.w500,
                       ),
