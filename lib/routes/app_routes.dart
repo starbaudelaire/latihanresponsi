@@ -1,5 +1,7 @@
 abstract class AppRoutes {
-  static const String products = '/products';
-  static const String detail = '/detail';
-  static const String cart = '/cart';
+  static const login = '/login';
+  static const character = '/character';
+  static const detailCharacter = '/detail-character';
+  static const spell = '/spell';
+  static const favoriteSpell = '/favorite-spell';
 }

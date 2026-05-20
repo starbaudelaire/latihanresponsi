@@ -1,22 +1,34 @@
+// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hive_flutter/hive_flutter.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  
+  await Hive.initFlutter();
+  await Hive.openBox('favoritesBox'); 
+
+  final prefs = await SharedPreferences.getInstance();
+  bool isLogin = prefs.getBool('isLogin') ?? false;
+
+  runApp(MyApp(isLogin: isLogin));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLogin;
+  const MyApp({super.key, required this.isLogin});
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'GetX App',
-      initialRoute: AppRoutes.products,
+      title: 'Harry Potter App',
+      initialRoute: isLogin ? AppRoutes.character : AppRoutes.login,
       getPages: AppPages.routes,
     );
   }
