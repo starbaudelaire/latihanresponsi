@@ -1,4 +1,3 @@
-// lib/main.dart
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
@@ -11,7 +10,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   
   await Hive.initFlutter();
-  await Hive.openBox('favoritesBox'); 
+  await Hive.openBox('favorites'); 
 
   final prefs = await SharedPreferences.getInstance();
   bool isLogin = prefs.getBool('isLogin') ?? false;
