@@ -3,8 +3,13 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'controllers/auth_controller.dart';
+import 'controllers/character_controller.dart';
+import 'controllers/spell_controller.dart';
+
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
+
 import 'services/notification_service.dart';
 
 void main() async {
@@ -12,28 +17,43 @@ void main() async {
 
   await Hive.initFlutter();
 
-  // HARUS SAMA DENGAN YANG DIPAKAI DI CONTROLLER
   await Hive.openBox('favoritesBox');
 
   await NotificationService.init();
 
   final prefs = await SharedPreferences.getInstance();
+
   bool isLogin = prefs.getBool('isLogin') ?? false;
 
-  runApp(MyApp(isLogin: isLogin));
+  // REGISTER CONTROLLER
+  Get.put(AuthController());
+  Get.put(CharacterController());
+  Get.put(SpellController());
+
+  runApp(
+    MyApp(isLogin: isLogin),
+  );
 }
 
 class MyApp extends StatelessWidget {
   final bool isLogin;
 
-  const MyApp({super.key, required this.isLogin});
+  const MyApp({
+    super.key,
+    required this.isLogin,
+  });
 
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Harry Potter App',
-      initialRoute: isLogin ? AppRoutes.character : AppRoutes.login,
+
+      initialRoute:
+          isLogin
+              ? AppRoutes.character
+              : AppRoutes.login,
+
       getPages: AppPages.routes,
     );
   }

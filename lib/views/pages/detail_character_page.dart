@@ -8,7 +8,7 @@ class DetailCharacterPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final Character character = Get.arguments;
+    final CharacterModel character = Get.arguments;
 
     return Scaffold(
       appBar: AppBar(
@@ -46,21 +46,13 @@ class DetailCharacterPage extends StatelessWidget {
 
             buildItem("Full Name", character.fullName),
             buildItem("Nickname", character.nickname),
-            buildItem("Hogwarts House", character.hogwartsHouse),
-            buildItem("Interpreted By", character.interpretedBy),
+            buildItem("House", character.hogwartsHouse),
+            buildItem("Actor", character.interpretedBy),
             buildItem("Birthdate", character.birthdate),
-            buildItem("Children", character.children.toString()),
-            buildItem("Nationality", character.nationality),
-            buildItem("Eye Colour", character.eyeColour),
-            buildItem("Hair Colour", character.hairColour),
-            buildItem("Patronus", character.patronus),
-            buildItem("Blood Status", character.bloodStatus),
-            buildItem("Species", character.species),
-            buildItem("Gender", character.gender),
-            buildItem("Role", character.role),
-            buildItem("Wand", character.wand),
-
-            const SizedBox(height: 20),
+            buildItem(
+              "Children",
+              character.children.join(", "),
+            ),
           ],
         ),
       ),
@@ -73,8 +65,8 @@ class DetailCharacterPage extends StatelessWidget {
       margin: const EdgeInsets.only(bottom: 12),
       padding: const EdgeInsets.all(14),
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(14),
         color: Colors.grey.shade100,
+        borderRadius: BorderRadius.circular(14),
       ),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -90,10 +82,7 @@ class DetailCharacterPage extends StatelessWidget {
           const SizedBox(height: 6),
 
           Text(
-            value.isEmpty ? "-" : value,
-            style: const TextStyle(
-              fontSize: 15,
-            ),
+            value.isEmpty ? '-' : value,
           ),
         ],
       ),

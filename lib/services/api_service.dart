@@ -12,7 +12,7 @@ class ApiService {
   static const String spellUrl =
       'https://potterapi-fedeperin.vercel.app/en/spells';
 
-  static Future<List<Character>> getCharacters() async {
+  static Future<List<CharacterModel>> getCharacters() async {
     final response = await http.get(
       Uri.parse(characterUrl),
     );
@@ -21,7 +21,9 @@ class ApiService {
       final List data = jsonDecode(response.body);
 
       return data
-          .map((e) => Character.fromJson(e))
+          .map(
+            (e) => CharacterModel.fromJson(e),
+          )
           .toList();
     } else {
       throw Exception('Failed fetch characters');
@@ -37,7 +39,9 @@ class ApiService {
       final List data = jsonDecode(response.body);
 
       return data
-          .map((e) => SpellModel.fromJson(e))
+          .map(
+            (e) => SpellModel.fromJson(e),
+          )
           .toList();
     } else {
       throw Exception('Failed fetch spells');

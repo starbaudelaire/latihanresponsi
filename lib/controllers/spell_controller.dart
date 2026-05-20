@@ -33,10 +33,7 @@ class SpellController extends GetxController {
 
       spells.assignAll(result);
     } catch (e) {
-      Get.snackbar(
-        'Error',
-        'Failed fetch spells',
-      );
+      Get.snackbar('Error', 'Failed fetch spells');
     } finally {
       isLoading.value = false;
     }
@@ -49,9 +46,8 @@ class SpellController extends GetxController {
       favoriteSpells.assignAll(
         (data as List)
             .map(
-              (e) => SpellModel.fromJson(
-                Map<String, dynamic>.from(jsonDecode(e)),
-              ),
+              (e) =>
+                  SpellModel.fromJson(Map<String, dynamic>.from(jsonDecode(e))),
             )
             .toList(),
       );
@@ -59,45 +55,33 @@ class SpellController extends GetxController {
   }
 
   void saveFavorites() {
-    final data = favoriteSpells
-        .map((e) => jsonEncode(e.toJson()))
-        .toList();
+    final data = favoriteSpells.map((e) => jsonEncode(e.toJson())).toList();
 
     favBox.put('favorites', data);
   }
 
   bool isFavorite(SpellModel spell) {
-    return favoriteSpells.any(
-      (item) => item.spell == spell.spell,
-    );
+    return favoriteSpells.any((item) => item.spell == spell.spell);
   }
 
   void toggleFavorite(SpellModel spell) {
     if (isFavorite(spell)) {
-      favoriteSpells.removeWhere(
-        (item) => item.spell == spell.spell,
-      );
+      favoriteSpells.removeWhere((item) => item.spell == spell.spell);
 
-      Get.snackbar(
-        'Removed',
-        '${spell.spell} removed from favorite',
-      );
+      Get.snackbar('Removed', '${spell.spell} removed from favorite');
     } else {
       favoriteSpells.add(spell);
 
-      Get.snackbar(
-        'Added',
-        '${spell.spell} added to favorite',
-      );
+      Get.snackbar('Added', '${spell.spell} added to favorite');
     }
 
     saveFavorites();
+
+    favoriteSpells.refresh();
   }
 
   void removeFavorite(SpellModel spell) {
-    favoriteSpells.removeWhere(
-      (item) => item.spell == spell.spell,
-    );
+    favoriteSpells.removeWhere((item) => item.spell == spell.spell);
 
     saveFavorites();
 
@@ -106,9 +90,6 @@ class SpellController extends GetxController {
       '${spell.spell} removed from favorite list',
     );
 
-    Get.snackbar(
-      'Deleted',
-      '${spell.spell} deleted from favorite',
-    );
+    Get.snackbar('Deleted', '${spell.spell} deleted from favorite');
   }
 }

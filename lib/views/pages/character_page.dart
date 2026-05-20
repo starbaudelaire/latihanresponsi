@@ -8,11 +8,9 @@ import '../../routes/app_routes.dart';
 class CharacterPage extends StatelessWidget {
   CharacterPage({super.key});
 
-  final CharacterController controller =
-      Get.find<CharacterController>();
+  final CharacterController controller = Get.find<CharacterController>();
 
-  final AuthController authController =
-      Get.find<AuthController>();
+  final AuthController authController = Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -34,9 +32,7 @@ class CharacterPage extends StatelessWidget {
       ),
       body: Obx(() {
         if (controller.isLoading.value) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         return ListView.builder(
@@ -45,23 +41,20 @@ class CharacterPage extends StatelessWidget {
             final character = controller.characters[index];
 
             return Card(
-              margin: const EdgeInsets.symmetric(
-                horizontal: 12,
-                vertical: 6,
-              ),
+              margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: ListTile(
                 leading: CircleAvatar(
-                  backgroundImage: NetworkImage(
-                    character.image,
-                  ),
+                  backgroundImage: character.image.isNotEmpty
+                      ? NetworkImage(character.image)
+                      : null,
+                  child: character.image.isEmpty
+                      ? const Icon(Icons.person)
+                      : null,
                 ),
                 title: Text(character.fullName),
                 subtitle: Text(character.hogwartsHouse),
                 onTap: () {
-                  Get.toNamed(
-                    AppRoutes.detailCharacter,
-                    arguments: character,
-                  );
+                  Get.toNamed(AppRoutes.detailCharacter, arguments: character);
                 },
               ),
             );

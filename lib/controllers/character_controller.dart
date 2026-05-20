@@ -4,7 +4,8 @@ import '../models/character_model.dart';
 import '../services/api_service.dart';
 
 class CharacterController extends GetxController {
-  final RxList<Character> characters = <Character>[].obs;
+  final RxList<CharacterModel> characters =
+      <CharacterModel>[].obs;
 
   final RxBool isLoading = false.obs;
 
@@ -19,7 +20,8 @@ class CharacterController extends GetxController {
     try {
       isLoading.value = true;
 
-      final result = await ApiService.getCharacters();
+      final result =
+          await ApiService.getCharacters();
 
       characters.assignAll(result);
     } catch (e) {

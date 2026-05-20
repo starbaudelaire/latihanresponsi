@@ -8,8 +8,11 @@ import '../../routes/app_routes.dart';
 class SpellPage extends StatelessWidget {
   SpellPage({super.key});
 
-  final SpellController controller = Get.find<SpellController>();
-  final AuthController authCtrl = Get.find<AuthController>();
+  final SpellController controller =
+      Get.find<SpellController>();
+
+  final AuthController authController =
+      Get.find<AuthController>();
 
   @override
   Widget build(BuildContext context) {
@@ -18,11 +21,13 @@ class SpellPage extends StatelessWidget {
         title: const Text('Spells View'),
         actions: [
           IconButton(
-            onPressed: () => Get.toNamed(AppRoutes.favoriteSpell),
+            onPressed: () {
+              Get.toNamed(AppRoutes.favoriteSpell);
+            },
             icon: const Icon(Icons.favorite),
           ),
           IconButton(
-            onPressed: authCtrl.logout,
+            onPressed: authController.logout,
             icon: const Icon(Icons.logout),
           ),
         ],
@@ -38,31 +43,48 @@ class SpellPage extends StatelessWidget {
           itemCount: controller.spells.length,
           itemBuilder: (context, index) {
             final spell = controller.spells[index];
-            final isFavorite = controller.isFavorite(spell);
 
             return Card(
               margin: const EdgeInsets.symmetric(
                 horizontal: 12,
                 vertical: 6,
               ),
-              child: ListTile(
-                leading: const CircleAvatar(
-                  child: Icon(Icons.auto_fix_high),
-                ),
-                title: Text(spell.spell),
-                subtitle: Text(spell.use),
-                trailing: IconButton(
-                  icon: Icon(
-                    isFavorite
-                        ? Icons.favorite
-                        : Icons.favorite_border,
-                    color: isFavorite ? Colors.red : null,
+              child: Obx(() {
+                final isFavorite =
+                    controller.favoriteSpells.any(
+                  (item) => item.spell == spell.spell,
+                );
+
+                return ListTile(
+                  leading: const CircleAvatar(
+                    child: Icon(Icons.auto_fix_high),
                   ),
-                  onPressed: () {
-                    controller.toggleFavorite(spell);
-                  },
-                ),
-              ),
+
+                  title: Text(spell.spell),
+
+                  subtitle: Text(
+                    spell.use,
+                  ),
+
+                  trailing: IconButton(
+                    onPressed: () {
+                      controller.toggleFavorite(
+                        spell,
+                      );
+                    },
+
+                    icon: Icon(
+                      isFavorite
+                          ? Icons.favorite
+                          : Icons.favorite_border,
+
+                      color: isFavorite
+                          ? Colors.red
+                          : null,
+                    ),
+                  ),
+                );
+              }),
             );
           },
         );
