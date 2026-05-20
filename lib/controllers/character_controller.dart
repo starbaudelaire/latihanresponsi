@@ -1,26 +1,32 @@
 import 'package:get/get.dart';
+
 import '../models/character_model.dart';
 import '../services/api_service.dart';
 
 class CharacterController extends GetxController {
-  final RxList<CharacterModel> characters = <CharacterModel>[].obs;
+  final RxList<Character> characters = <Character>[].obs;
+
   final RxBool isLoading = false.obs;
-  final RxString errorMessage = ''.obs;
 
   @override
   void onInit() {
     super.onInit();
+
     fetchCharacters();
   }
 
   Future<void> fetchCharacters() async {
-    isLoading.value = true;
-    errorMessage.value = '';
     try {
-      final data = await ApiService.getCharacters();
-      characters.assignAll(data);
+      isLoading.value = true;
+
+      final result = await ApiService.getCharacters();
+
+      characters.assignAll(result);
     } catch (e) {
-      errorMessage.value = 'Gagal load data: $e';
+      Get.snackbar(
+        'Error',
+        'Failed fetch character',
+      );
     } finally {
       isLoading.value = false;
     }

@@ -1,83 +1,114 @@
 import 'dart:convert';
+
 import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+
 import '../models/spell_model.dart';
 import '../services/api_service.dart';
+import '../services/notification_service.dart';
 
 class SpellController extends GetxController {
   final RxList<SpellModel> spells = <SpellModel>[].obs;
   final RxList<SpellModel> favoriteSpells = <SpellModel>[].obs;
-  final RxBool isLoading = false.obs;
-  final RxString errorMessage = ''.obs;
 
-  late Box _favBox;
+  final RxBool isLoading = false.obs;
+
+  late Box favBox;
 
   @override
   void onInit() {
     super.onInit();
-    _favBox = Hive.box('favoritesBox');
-    _loadFavoritesFromHive();
+
+    favBox = Hive.box('favoritesBox');
+
+    loadFavorites();
     fetchSpells();
   }
 
   Future<void> fetchSpells() async {
-    isLoading.value = true;
-    errorMessage.value = '';
     try {
-      final data = await ApiService.getSpells();
-      spells.assignAll(data);
+      isLoading.value = true;
+
+      final result = await ApiService.getSpells();
+
+      spells.assignAll(result);
     } catch (e) {
-      errorMessage.value = 'Gagal load data: $e';
+      Get.snackbar(
+        'Error',
+        'Failed fetch spells',
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  void _loadFavoritesFromHive() {
-    final raw = _favBox.get('favorites', defaultValue: []);
-    final List<dynamic> list = raw is List ? raw : [];
-    favoriteSpells.assignAll(
-      list.map((e) => SpellModel.fromJson(Map<String, dynamic>.from(jsonDecode(e)))).toList(),
-    );
-  }
+  void loadFavorites() {
+    final data = favBox.get('favorites');
 
-  void _saveFavoritesToHive() {
-    final encoded = favoriteSpells.map((e) => jsonEncode(e.toJson())).toList();
-    _favBox.put('favorites', encoded);
-  }
-
-  bool isFavorite(SpellModel spell) {
-    return favoriteSpells.any((e) => e.index == spell.index);
-  }
-
-  void toggleFavorite(SpellModel spell) {
-    if (isFavorite(spell)) {
-      favoriteSpells.removeWhere((e) => e.index == spell.index);
-      _saveFavoritesToHive();
-      Get.snackbar(
-        'Removed!',
-        '${spell.spell} removed from the list',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: const Color(0xFFF44336),
-        colorText: const Color(0xFFFFFFFF),
-        duration: const Duration(seconds: 2),
-      );
-    } else {
-      favoriteSpells.add(spell);
-      _saveFavoritesToHive();
-      Get.snackbar(
-        'Add!',
-        '${spell.spell} successfully added to fav list',
-        snackPosition: SnackPosition.TOP,
-        backgroundColor: const Color(0xFF4CAF50),
-        colorText: const Color(0xFFFFFFFF),
-        duration: const Duration(seconds: 2),
+    if (data != null) {
+      favoriteSpells.assignAll(
+        (data as List)
+            .map(
+              (e) => SpellModel.fromJson(
+                Map<String, dynamic>.from(jsonDecode(e)),
+              ),
+            )
+            .toList(),
       );
     }
   }
 
+  void saveFavorites() {
+    final data = favoriteSpells
+        .map((e) => jsonEncode(e.toJson()))
+        .toList();
+
+    favBox.put('favorites', data);
+  }
+
+  bool isFavorite(SpellModel spell) {
+    return favoriteSpells.any(
+      (item) => item.spell == spell.spell,
+    );
+  }
+
+  void toggleFavorite(SpellModel spell) {
+    if (isFavorite(spell)) {
+      favoriteSpells.removeWhere(
+        (item) => item.spell == spell.spell,
+      );
+
+      Get.snackbar(
+        'Removed',
+        '${spell.spell} removed from favorite',
+      );
+    } else {
+      favoriteSpells.add(spell);
+
+      Get.snackbar(
+        'Added',
+        '${spell.spell} added to favorite',
+      );
+    }
+
+    saveFavorites();
+  }
+
   void removeFavorite(SpellModel spell) {
-    favoriteSpells.removeWhere((e) => e.index == spell.index);
-    _saveFavoritesToHive();
+    favoriteSpells.removeWhere(
+      (item) => item.spell == spell.spell,
+    );
+
+    saveFavorites();
+
+    NotificationService.showNotification(
+      'Favorite Removed',
+      '${spell.spell} removed from favorite list',
+    );
+
+    Get.snackbar(
+      'Deleted',
+      '${spell.spell} deleted from favorite',
+    );
   }
 }

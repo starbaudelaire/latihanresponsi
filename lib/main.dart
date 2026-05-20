@@ -5,12 +5,17 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
+import 'services/notification_service.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  
+
   await Hive.initFlutter();
-  await Hive.openBox('favorites'); 
+
+  // HARUS SAMA DENGAN YANG DIPAKAI DI CONTROLLER
+  await Hive.openBox('favoritesBox');
+
+  await NotificationService.init();
 
   final prefs = await SharedPreferences.getInstance();
   bool isLogin = prefs.getBool('isLogin') ?? false;
@@ -20,6 +25,7 @@ void main() async {
 
 class MyApp extends StatelessWidget {
   final bool isLogin;
+
   const MyApp({super.key, required this.isLogin});
 
   @override
