@@ -5,7 +5,7 @@ import '../routes/app_routes.dart';
 
 class AuthController extends GetxController {
   Future<void> login(String username, String password) async {
-    if (username == 'admin' && password == '12345') {
+    if (username == 'admin' && password == '123230137') {
       final prefs = await SharedPreferences.getInstance();
 
       await prefs.setBool('isLogin', true);

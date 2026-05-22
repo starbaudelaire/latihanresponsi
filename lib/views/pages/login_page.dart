@@ -69,7 +69,7 @@ class LoginPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 12),
                 const Text(
-                  'Username: admin | Password: 12345',
+                  'Username: admin | Password: 123230137',
                 ),
               ],
             ),

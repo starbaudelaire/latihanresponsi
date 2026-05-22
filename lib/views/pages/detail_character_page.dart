@@ -49,10 +49,20 @@ class DetailCharacterPage extends StatelessWidget {
             buildItem("House", character.hogwartsHouse),
             buildItem("Actor", character.interpretedBy),
             buildItem("Birthdate", character.birthdate),
+
             buildItem(
               "Children",
-              character.children.join(", "),
+              character.children.isEmpty
+                  ? '-'
+                  : character.children.join(', '),
             ),
+
+            buildItem("Ancestry", character.ancestry),
+            buildItem("Species", character.species),
+            buildItem("Gender", character.gender),
+            buildItem("Eye Colour", character.eyeColour),
+            buildItem("Hair Colour", character.hairColour),
+            buildItem("Wand", character.wand),
           ],
         ),
       ),

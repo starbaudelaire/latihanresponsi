@@ -3,10 +3,6 @@ import 'package:get/get.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'controllers/auth_controller.dart';
-import 'controllers/character_controller.dart';
-import 'controllers/spell_controller.dart';
-
 import 'routes/app_pages.dart';
 import 'routes/app_routes.dart';
 
@@ -24,11 +20,6 @@ void main() async {
   final prefs = await SharedPreferences.getInstance();
 
   bool isLogin = prefs.getBool('isLogin') ?? false;
-
-  // REGISTER CONTROLLER
-  Get.put(AuthController());
-  Get.put(CharacterController());
-  Get.put(SpellController());
 
   runApp(
     MyApp(isLogin: isLogin),
